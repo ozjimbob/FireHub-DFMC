@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 # Download AWAP data
 
 #.libPaths(c("C:\\Users\\30038555\\DOCUMENTS\\R", .libPaths()))
@@ -7,8 +9,14 @@ library(sp)
 library(raster)
 #library("devtools")
 #install_version("uncompress","1.34")
-library(uncompress)
+#library(uncompress)
 # set wd
+
+dir.create("VP3pm")
+dir.create("Tmx")
+dir.create("pcp")
+dir.create("DFMC")
+dir.create("VPD")
 
 file.remove(list.files("VP3pm",full.names=TRUE))
 file.remove(list.files("Tmx",full.names=TRUE))
