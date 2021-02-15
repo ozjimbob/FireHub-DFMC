@@ -37,3 +37,10 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Data folders
+DFMC/
+pcp/
+Tmx/
+VP3pm/
+VPD/
