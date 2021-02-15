@@ -17,6 +17,7 @@ dir.create("Tmx")
 dir.create("pcp")
 dir.create("DFMC")
 dir.create("VPD")
+dir.create("VPDd")
 
 file.remove(list.files("VP3pm",full.names=TRUE))
 file.remove(list.files("Tmx",full.names=TRUE))
@@ -24,7 +25,7 @@ file.remove(list.files("pcp",full.names=TRUE))
 
 #daily VP (vapour pressure at 3pm)
 # Set date range and download 
-dates<-Sys.Date()-2
+dates<-seq(Sys.Date()-20,Sys.Date()-2,by="day")
 
 for(i in 1:length(dates)){
   D<-strftime(dates[i],format = "%d")
@@ -128,9 +129,9 @@ RunProcess = function(executable, arguments)
 
 
 # List the Tmax and VP files
-Tmx.lst<-list.files(path="Tmx/", pattern=".Z", include.dirs = TRUE, full.names=TRUE)
-VP.lst<-list.files(path="VP3pm/", pattern=".Z", include.dirs = TRUE, full.names=TRUE)
-pcp.lst<-list.files(path="pcp/", pattern=".Z", include.dirs = TRUE, full.names=TRUE)
+Tmx.lst<-list.files(path="Tmx", pattern=".Z", include.dirs = TRUE, full.names=TRUE)
+VP.lst<-list.files(path="VP3pm", pattern=".Z", include.dirs = TRUE, full.names=TRUE)
+pcp.lst<-list.files(path="pcp", pattern=".Z", include.dirs = TRUE, full.names=TRUE)
 
 # DFMC model (Resco et al., AFM 2016) with the calibration coefficients for SE Australia from Nolan et al. 2016. (RSE)
 DFMCfun <- function(x) {
@@ -186,6 +187,36 @@ for (f in 1:length(Tmx.lst)){
     writeRaster(DFMC.tmp.r,paste0(outputfile_DFMC,".tif"), overwrite=TRUE)
   }
     
+# Clear history
+old_dates <- seq(dates-31,dates,by="day")
+keep_DFMC_list <- sprintf("DFMC/DFMC_%s%s%s.tif",format(old_dates,"%Y"),format(old_dates,"%m"),format(old_dates,"%d"))
+keep_VPD_list <- sprintf("VPD/VPD_%s%s%s.tif",format(old_dates,"%Y"),format(old_dates,"%m"),format(old_dates,"%d"))
 
+DFMC_exist <- list.files("DFMC",full.names = TRUE)
+VPD_exist <- list.files("VPD",full.names=TRUE)
 
-# Same for Precip files (DFMC should not be calculated on days of rain > 2mm)
+DFMC_diff <- setdiff(DFMC_exist,keep_DFMC_list)
+VPD_diff <- setdiff(VPD_exist,keep_VPD_list)
+
+unlink(DFMC_diff)
+unlink(VPD_diff)
+
+# Trend Analysis
+VPD_stack <- stack(list.files("VPD",full.names=TRUE))
+
+modl <- function(x){
+  if(is.na(x[1])){return(c(NA,NA))}
+  day <- 1:length(x)
+  md <- lm(x~day)
+  slp <- md$coefficients[2]
+  r2 <- summary(md)$r.squared
+  as.numeric(c(slp,r2))
+}
+
+test <- calc(VPD_stack,fun=modl)
+
+mask_r = test[[2]]
+mask_r[mask_r<0.3]=NA
+mask_r[!is.na(mask_r)]=0
+test[[1]]=test[[1]] + mask_r
+writeRaster(test[[1]],"VPDd/VPD_trend.tif")
