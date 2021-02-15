@@ -24,7 +24,7 @@ file.remove(list.files("pcp",full.names=TRUE))
 
 #daily VP (vapour pressure at 3pm)
 # Set date range and download 
-dates<-Sys.Date()-1
+dates<-Sys.Date()-2
 
 for(i in 1:length(dates)){
   D<-strftime(dates[i],format = "%d")
@@ -138,9 +138,17 @@ DFMCfun <- function(x) {
   return(y)}
 
 for (f in 1:length(Tmx.lst)){
+  
+  if(.Platform$OS.type=="unix"){
+    uncompress_linux(Tmx.lst[f])
+    uncompress_linux(VP.lst[f]) 
+    uncompress_linux(pcp.lst[f]) 
+  }else{
     Decompress7Zip(Tmx.lst[f],"Tmx/", FALSE)
     Decompress7Zip(VP.lst[f],"VP3pm/", FALSE) 
     Decompress7Zip(pcp.lst[f],"pcp/", FALSE) 
+  }
+    
     Tmx.tmp.r<-raster(unlist(strsplit(Tmx.lst[f], ".Z")))
     ea.tmp.r<-raster(unlist(strsplit(VP.lst[f], ".Z")))   # in hPa from AWAP, so multiply by 0.1 to convert to KPa
     pcp.tmp.r<-raster(unlist(strsplit(pcp.lst[f], ".Z"))) 
