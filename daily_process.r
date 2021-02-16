@@ -31,10 +31,13 @@ for(i in 1:length(dates)){
   m2<-strftime(dates[i+1]-1,format = "%m")
   Y<-strftime(dates[i],format = "%Y")
   y2<-strftime(dates[i+1]-1,format = "%Y")
-  download.file(paste0("http://www.bom.gov.au/web03/ncc/www/awap/vprp/vprph15/daily/grid/0.05/history/nat/",Y,M,D,Y,M,D,".grid.Z"),
+  a=try(download.file(paste0("http://www.bom.gov.au/web03/ncc/www/awap/vprp/vprph15/daily/grid/0.05/history/nat/",Y,M,D,Y,M,D,".grid.Z"),
                 #paste0("E:/Data/Climate/AWAP/AWAP_Daily/VP3pm/VP3pm_",Y,M,D,".grid.Z"),
                 paste0("VP3pm/VP3pm_",Y,M,D,".grid.Z"),
-                mode="wb")
+                mode="wb"))
+  if(class(a) == "try-error"){
+    quit(save="no")
+  }
   message(paste0(i," out of ",length(dates)))
 }
 
@@ -45,10 +48,14 @@ for(i in 1:length(dates)){
   m2<-strftime(dates[i+1]-1,format = "%m")
   Y<-strftime(dates[i],format = "%Y")
   y2<-strftime(dates[i+1]-1,format = "%Y")
-  download.file(paste0("http://www.bom.gov.au/web03/ncc/www/awap/rainfall/totals/daily/grid/0.05/history/nat/",Y,M,D,Y,M,D,".grid.Z"),
+ 
+  a=try( download.file(paste0("http://www.bom.gov.au/web03/ncc/www/awap/rainfall/totals/daily/grid/0.05/history/nat/",Y,M,D,Y,M,D,".grid.Z"),
                 #paste0("E:/Data/Climate/AWAP/AWAP_Daily/VP3pm/VP3pm_",Y,M,D,".grid.Z"),
                 paste0("pcp/pcp_",Y,M,D,".grid.Z"),
-                mode="wb")
+                mode="wb"))
+  if(class(a) == "try-error"){
+    quit(save="no")
+  }
   message(paste0(i," out of ",length(dates)))
 }
 
@@ -66,11 +73,13 @@ for(i in 1:length(dates)){
   y2<-strftime(dates[i+1]-1,format = "%Y")
   
   
-  download.file(paste0("http://www.bom.gov.au/web03/ncc/www/awap/temperature/maxave/daily/grid/0.05/history/nat/",Y,M,D,Y,M,D,".grid.Z"),
+  a=try(download.file(paste0("http://www.bom.gov.au/web03/ncc/www/awap/temperature/maxave/daily/grid/0.05/history/nat/",Y,M,D,Y,M,D,".grid.Z"),
                 #paste0("E:/Data/Climate/AWAP/AWAP_Daily/Tmx/Tmx_",Y,M,D,".grid.Z"),
                 paste0("Tmx/Tmx_",Y,M,D,".grid.Z"),
-                mode="wb")
-  
+                mode="wb"))
+  if(class(a) == "try-error"){
+    quit(save="no")
+  }
   message(paste0(i," out of ",length(dates)))
 }
 
