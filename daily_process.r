@@ -22,7 +22,7 @@ file.remove(list.files("pcp",full.names=TRUE))
 
 #daily VP (vapour pressure at 3pm)
 # Set date range and download 
-dates<-seq(Sys.Date()-1,by="day")
+dates<-Sys.Date()-1
 
 for(i in 1:length(dates)){
   D<-strftime(dates[i],format = "%d")
