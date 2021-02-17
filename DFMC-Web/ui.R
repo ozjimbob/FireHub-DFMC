@@ -27,7 +27,9 @@ shinyUI(fluidPage(
         ),
 
         # Show a plot of the generated distribution
-        column(10,
+        column(10,tags$style(type = "text/css",
+                             "#output_season_map {height: 70vh !important;}", # calc(100vh - 320px)
+                             "#output_season_plot {height: 640px !important;}"),
                leafletOutput("mapPlot"))
         )
     )

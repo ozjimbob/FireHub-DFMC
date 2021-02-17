@@ -48,7 +48,7 @@ shinyServer(function(input, output) {
           p <- colorNumeric(c("blue","yellow","red"),0:8)
         }
         if(input$rasterLayer == "VPD Trend"){
-            p <- colorNumeric(c("green","white","red"),c(-.5,.5))
+            p <- colorNumeric(c("darkgreen","green","white","coral","red"),c(-.7,.7))
         }
         return(p)
     })
