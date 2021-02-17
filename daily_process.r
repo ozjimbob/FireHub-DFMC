@@ -194,7 +194,7 @@ for (f in 1:length(Tmx.lst)){
   }
     
 # Clear history
-old_dates <- seq(dates-62,dates,by="day")
+old_dates <- seq(dates-15,dates,by="day")
 keep_DFMC_list <- sprintf("DFMC/DFMC_%s%s%s.tif",format(old_dates,"%Y"),format(old_dates,"%m"),format(old_dates,"%d"))
 keep_VPD_list <- sprintf("VPD/VPD_%s%s%s.tif",format(old_dates,"%Y"),format(old_dates,"%m"),format(old_dates,"%d"))
 
@@ -208,7 +208,10 @@ unlink(DFMC_diff)
 unlink(VPD_diff)
 
 # Trend Analysis
-VPD_stack <- stack(list.files("VPD",full.names=TRUE))
+file_list = list.files("VPD",full.names=TRUE)
+lfl <- length(file_list)
+file_list = file_list[(lfl-10):lfl]
+VPD_stack <- stack(file_list)
 
 modl <- function(x){
   if(is.na(x[1])){return(c(NA,NA))}
@@ -225,4 +228,4 @@ mask_r = test[[2]]
 mask_r[mask_r<0.3]=NA
 mask_r[!is.na(mask_r)]=0
 test[[1]]=test[[1]] + mask_r
-writeRaster(test[[1]],"VPDd/VPD_trend.tif")
+writeRaster(test[[1]],"VPDd/VPD_trend.tif",overwrite=TRUE)
