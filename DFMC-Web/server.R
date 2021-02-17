@@ -10,9 +10,11 @@
 library(shiny)
 library(raster)
 library(leaflet)
-cat(file=stderr(),getwd())
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+    cat(file=stderr(),getwd())
+    
     df_list <- list.files("DFMC",full.names = TRUE)
     dfmc <- raster(df_list[length(df_list)])
     vpd_list <- list.files("VPD",full.names = TRUE)
