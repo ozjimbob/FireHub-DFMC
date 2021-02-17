@@ -13,13 +13,16 @@ library(leaflet)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-    cat(file=stderr(),getwd())
-    
-    df_list <- list.files("DFMC",full.names = TRUE)
+    if(.Platform$OS.type=="unix"){
+        rrt = "/root/"
+    }else{
+        rrt = "../"
+    }
+    df_list <- list.files(paste0(rrt,"DFMC"),full.names = TRUE)
     dfmc <- raster(df_list[length(df_list)])
-    vpd_list <- list.files("VPD",full.names = TRUE)
+    vpd_list <- list.files(paste0(rrt,"VPD"),full.names = TRUE)
     vpd <- raster(vpd_list[length(vpd_list)])  
-    vpd_trend <- raster("VPDd/VPD_trend.tif")
+    vpd_trend <- raster(paste0(rrt,"VPDd/VPD_trend.tif"))
     
     raster_to_show <- reactive({
         if(input$rasterLayer == "DFMC"){
