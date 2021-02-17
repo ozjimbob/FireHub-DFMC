@@ -53,13 +53,26 @@ shinyServer(function(input, output) {
         return(p)
     })
     
+    palette_vals<- reactive({
+        if(input$rasterLayer == "DFMC"){
+            p <- c(0,10,20,30,40)
+        }
+        if(input$rasterLayer == "VPD"){
+            p <- c(0,1,2,3,4,5,6,7,8)
+        }
+        if(input$rasterLayer == "VPD Trend"){
+            p <- c(-0.7,-0.4,-0.2,0,0.2,0.4,0.7)
+        }
+        return(p)
+    })
+    
     mapPlot <- reactive({
         leaflet() %>% addProviderTiles(providers$Stamen.TonerLite,
                          options = providerTileOptions(noWrap = TRUE)) %>%
         addRasterImage(raster_to_show(),
         colors=palette_to_show(),
         opacity=0.8
-        )})
+        ) %>% addLegend(pal=palette_to_show(),values=palette_vals())})
     
     output$mapPlot <- renderLeaflet(mapPlot())
 
